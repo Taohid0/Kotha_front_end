@@ -15,6 +15,7 @@ export default class Sign_up extends Component {
             password_sign_up:"",
             confirm_password:"",
             age:"",
+            spinner_visible:false,
         };
         username_login="";
         password_login="";
@@ -40,6 +41,7 @@ export default class Sign_up extends Component {
 
     login_button()
     {
+        this.setState({spinner_visible:true});
         fetch('http://5445b8f5.ngrok.io/login/', {
             method: 'POST',
             headers: {
@@ -53,6 +55,7 @@ export default class Sign_up extends Component {
         }).then((response) =>
             response.json())
             .then((responseJson) => {
+                this.setState({spinner_visible:false});
                 response_text = responseJson.response_text;
 
                 if(response_text=="error")
@@ -91,7 +94,7 @@ export default class Sign_up extends Component {
         try {
             let age_value = parseInt(this.age);
 
-            if(isNaN(age_value)|| age_value<18 || age_value>100 )
+            if(isNaN(age_value)|| age_value<18 )
             {
                 return true;
             }
@@ -131,6 +134,7 @@ export default class Sign_up extends Component {
         else
         {
             if(this.username_sign_up.length>0) {
+                this.setState({spinner_visible:true});
                 fetch('http://5445b8f5.ngrok.io/sign_up/', {
                     method: 'POST',
                     headers: {
@@ -145,10 +149,31 @@ export default class Sign_up extends Component {
                 }).then((response) =>
                     response.json())
                     .then((responseJson) => {
+                        this.setState({spinner_visible:false});
                         response_text = responseJson.response_text;
                         if(response_text=="error")
                         {
-                            alert("Please enter all data correctly")
+                            Alert.alert(
+                                'Ops!',
+                                'Please enter all data correctly',
+                                [
+
+                                    {text: 'OK', onPress: () => {}},
+                                ],
+                                { cancelable: true }
+                            );
+                        }
+                        else if(response_text=="duplicate")
+                        {
+                            Alert.alert(
+                                'Ops!',
+                                'This username already exists, please try another one',
+                                [
+
+                                    {text: 'OK', onPress: () => {}},
+                                ],
+                                { cancelable: true }
+                            )
                         }
                         else if(response_text=="successful")
                         {

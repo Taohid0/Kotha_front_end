@@ -9,6 +9,7 @@ import All_messages from "./All_messages";
 import Message_details from "./Message_details";
 import Send_message from "./Send_message";
 import Reply from "./Reply";
+import Outbox from "./Outbox";
 
 console.disableYellowBox = true;
 
@@ -27,8 +28,15 @@ const Drawer_navigation = DrawerNavigator({
     All_messages:{
         screen:All_messages,
         navigationOptions: {
-            drawerLabel: () => "All Messages",
+            drawerLabel: () => "Inbox",
         }},
+    Outbox:{
+        screen:Outbox,
+        navigationOptions:{
+            drawerLabel:()=>"Outbox",
+        }
+    },
+
     Message_details:{
         screen:(props) =><Message_details  {...props} propName={'message,user_id'} />,
         navigationOptions:{
@@ -47,9 +55,9 @@ const Drawer_navigation = DrawerNavigator({
         }
     },
     Sign_up:{
-        screen:Login,
+        screen:Sign_up,
         navigationOptions:{
-            drawerLabel:()=>"Sign Up"
+            drawerLabel:()=>"Login"
         }
     },
 

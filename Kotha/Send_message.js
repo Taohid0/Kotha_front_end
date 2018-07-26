@@ -12,6 +12,7 @@ export default class Send_message extends Component{
         this.state={
             receiver:"",
             message:"",
+            spinner_visible:false,
         };
         receiver="";
         message="";
@@ -41,6 +42,7 @@ export default class Send_message extends Component{
                 )
             }
             else {
+                this.setState({spinner_visible:true});
                 fetch('http://5445b8f5.ngrok.io/send_message/', {
                     method: 'POST',
                     headers: {
@@ -55,6 +57,7 @@ export default class Send_message extends Component{
                 }).then((response) =>
                     response.json())
                     .then((responseJson) => {
+                        this.setState({spinner_visible:false});
                         response_text = responseJson.response_text;
                         if (response_text == "error") {
                             Alert.alert(
@@ -158,7 +161,7 @@ export default class Send_message extends Component{
                         this.message = message;
                         this.setState({ message: message })
                     }} multiline={true} />
-
+                    <Text style={{paddingBottom:20}}></Text>
                     <View style={{ alignItems: "center", justifyContent: "center" ,paddingBottom: 20 }}>
                         <Button titleStyle={{ fontWeight: "1000", }} buttonStyle={{
                             paddingTop: this.padding,
