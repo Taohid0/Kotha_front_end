@@ -1,5 +1,5 @@
 import React,{Component} from "react";
-import {View,Text,TextInput,StyleSheet,Picker,ScrollView,FlatList,Alert} from "react-native";
+import {View, Text, TextInput, StyleSheet, Picker, ScrollView, FlatList, Alert, AsyncStorage} from "react-native";
 import {Button} from "react-native-elements";
 import Spinner from "react-native-loading-spinner-overlay";
 
@@ -13,16 +13,35 @@ export default class Reply extends Component{
             receiver:"",
             message:"",
             spinner_visible:false,
+            sender:"",
         };
         receiver="";
         message="";
         this.send_button = this.send_button.bind(this);
+        this._retrieveData = this._retrieveData.bind(this);
 
     }
+
+    _retrieveData = async () => {
+        try {
+            const value = await AsyncStorage.getItem('username');
+            if (value !== null) {
+                this.sender =value;
+            }
+            else{
+                this.props.navigation.navigate("Sign_up");
+            }
+        } catch (error) {
+            this.props.navigation.navigate("Sign_up");
+            // Error retrieving data
+        }
+    }
+
     componentDidMount()
     {
         receiver="";
         message="";
+        this._retrieveData();
     }
     send_button()
     {
@@ -31,7 +50,7 @@ export default class Reply extends Component{
             if (this.message.length == 0 ) {
                 Alert.alert(
                     'Ops!',
-                    "Please fill up all the fields correctly",
+                    "Please fill up all the fields correctly. Only English letters are supported.",
                     [
 
                         {
@@ -43,15 +62,16 @@ export default class Reply extends Component{
                 )
             }
             else {
+
                 this.setState({spinner_visible:true});
-                fetch('http://5445b8f5.ngrok.io/reply/', {
+                fetch('http://taohidulislam.pythonanywhere.com/reply/', {
                     method: 'POST',
                     headers: {
                         Accept: 'application/json',
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        sender: "taohid",
+                        sender:this.sender,
                         receiver_id :this.props.navigation.state.params.user_id,
                         message: this.message,
                     }),
@@ -116,9 +136,7 @@ export default class Reply extends Component{
                                 ],
                                 {cancelable: true}
                             );
-                            // this.setState({message:"",receiver:""});
-                            // this.message="";
-                            // this.receiver="";
+
                             this.props.navigation.navigate("All_messages");
                         }
                     });

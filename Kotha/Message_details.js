@@ -1,5 +1,5 @@
 import React,{Component} from "react";
-import {View,Text,TextInput,StyleSheet,Picker,ScrollView,FlatList,Alert} from "react-native";
+import {View, Text, TextInput, StyleSheet, Picker, ScrollView, FlatList, Alert, AsyncStorage} from "react-native";
 import {Button} from "react-native-elements";
 import Spinner from "react-native-loading-spinner-overlay";
 export default class Message_details extends Component{
@@ -12,47 +12,65 @@ export default class Message_details extends Component{
             message:"",
             task :"Loading...",
             spinner_visible:false,
+            sender:"",
         };
         this.block_sender = this.block_sender.bind(this);
         this.reply_button = this.reply_button.bind(this);
-        this.check_block = this.check_block.bind(this);
+        this._retrieveData = this._retrieveData.bind(this);
+        this.sender="";
 
     }
+
+    _retrieveData = async () => {
+        try {
+            const value = await AsyncStorage.getItem('username');
+            if (value !== null) {
+                this.sender =value;
+                this.setState({spinner_visible:true});
+                fetch('http://taohidulislam.pythonanywhere.com/check_block/', {
+                    method: 'POST',
+                    headers: {
+                        Accept: 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        username:value,
+                        blocked_id:this.props.navigation.state.params.user_id,
+                    }),
+                }).then((response) =>
+                    response.json())
+                    .then((responseJson) => {
+
+                        response_text = responseJson.response_text;
+                        if (response_text==1)
+                        {
+                            this.setState({task:"Unblock Sender",spinner_visible:false})
+                        }
+                        else{
+                            this.setState({task:"Block Sender",spinner_visible:false})
+                        }
+                    });
+
+            }
+            else{
+                this.props.navigation.navigate("Sign_up");
+            }
+        } catch (error) {
+            this.props.navigation.navigate("Sign_up");
+            // Error retrieving data
+        }
+    }
+
     componentWillMount()
     {
-        this.check_block();
+        this._retrieveData();
     }
-    check_block()
-    {
-        this.setState({spinner_visible:true});
-        fetch('http://5445b8f5.ngrok.io/check_block/', {
-            method: 'POST',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                username: "taohid",
-                blocked_id:this.props.navigation.state.params.user_id,
-            }),
-        }).then((response) =>
-            response.json())
-            .then((responseJson) => {
 
-                response_text = responseJson.response_text;
-                if (response_text==1)
-                {
-                    this.setState({task:"Unblock Sender",spinner_visible:false})
-                }
-                else{
-                    this.setState({task:"Block Sender",spinner_visible:false})
-                }
-            });
-    }
 
     block_sender()
     {
-        fetch('http://5445b8f5.ngrok.io/block/', {
+
+        fetch('http://taohidulislam.pythonanywhere.com/block/', {
             method: 'POST',
             headers: {
                 Accept: 'application/json',
@@ -60,7 +78,7 @@ export default class Message_details extends Component{
             },
             body: JSON.stringify({
                 task:this.state.task,
-                username: "taohid",
+                username: this.sender,
                 blocked_id:this.props.navigation.state.params.user_id,
             }),
         }).then((response) =>

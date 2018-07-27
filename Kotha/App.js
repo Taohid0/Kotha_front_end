@@ -10,11 +10,23 @@ import Message_details from "./Message_details";
 import Send_message from "./Send_message";
 import Reply from "./Reply";
 import Outbox from "./Outbox";
+import SplashScreen from "react-native-smart-splash-screen";
+import Logout from "./Logout";
 
 console.disableYellowBox = true;
 
 type Props = {};
 export default class App extends Component<Props> {
+
+    componentDidMount()
+    {
+        SplashScreen.close({
+            animationType: SplashScreen.animationType.scale,
+            duration: 500,
+            delay: 500,
+        });
+
+    }
   render() {
     return (
       <Drawer_navigation/>
@@ -57,9 +69,15 @@ const Drawer_navigation = DrawerNavigator({
     Sign_up:{
         screen:Sign_up,
         navigationOptions:{
-            drawerLabel:()=>"Login"
+            drawerLabel:()=>null,
         }
     },
+    Logout:{
+        screen:Logout,
+        navigationOptions:{
+            drawerLabel:()=>"Logout"
+        }
+    }
 
 
 });

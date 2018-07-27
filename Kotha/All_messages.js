@@ -1,7 +1,8 @@
 import React,{Component} from "react";
-import {View,Text,TextInput,StyleSheet,Picker,ScrollView,FlatList,Alert} from "react-native";
+import {View, Text, TextInput, StyleSheet, Picker, ScrollView, FlatList, Alert, AsyncStorage} from "react-native";
 import {Button} from "react-native-elements";
 import Spinner from "react-native-loading-spinner-overlay";
+
 export default class All_messages extends Component {
 
     constructor(props) {
@@ -9,26 +10,45 @@ export default class All_messages extends Component {
 
         this.state = {
             all_messages: [],
+            sender:"",
+            empty_text:"",
         };
         this.get_all_messages = this.get_all_messages.bind(this);
+        this._retrieveData =this._retrieveData.bind(this);
 
     }
     componentDidMount()
     {
-    this.get_all_messages();
-    }
 
+    this._retrieveData();
+    }
+    _retrieveData = async () => {
+
+        try {
+            const value = await AsyncStorage.getItem('username');
+            if (value !== null) {
+                this.setState({sender:value});
+                this.get_all_messages();
+            }
+            else{
+                this.props.navigation.navigate("Sign_up");
+            }
+        } catch (error) {
+            this.props.navigation.navigate("Sign_up");
+            // Error retrieving data
+        }
+    }
     get_all_messages() {
         this.setState({spinner_visible:true});
 
-        fetch("http://5445b8f5.ngrok.io/my_all_messages/",{
+        fetch("http://taohidulislam.pythonanywhere.com/my_all_messages/",{
             method:"POST",
             headers:{
                 Accept:"application/json",
                 "Content-Type":"application/json",
             },
             body:JSON.stringify({
-                username :"taohid",
+                username :this.state.sender,
 
             }),
         }).then((response) =>
@@ -36,6 +56,9 @@ export default class All_messages extends Component {
             .then((responseJson) => {
                 all_texts = responseJson.all_texts;
                 this.setState({all_messages: all_texts,spinner_visible:false});
+                if (all_texts.length==0){
+                    this.setState({empty_text: "Your inbox in empty till now\n(Slide left to right to see options)"})
+                }
 
             });
     }
@@ -55,6 +78,7 @@ export default class All_messages extends Component {
                             paddingTop:10,paddingBottom:10,paddingLeft:10,
                             borderBottomColor:"white",borderBottomWidth:3,backgroundColor:"#F2F4F4"}} >{item[0]}</Text>}
                     />
+                    <Text style={{fontSize:20,color:"Red",textAlign:"center"}}>{this.state.empty_text}</Text>
                 </ScrollView>
 
             </View>

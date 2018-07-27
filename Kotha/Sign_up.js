@@ -1,8 +1,9 @@
 import React, { Component } from "react";
-import { View, Text, TextInput, StyleSheet, Picker ,ScrollView,Alert} from "react-native";
+import { View, Text, TextInput, StyleSheet, Picker ,ScrollView,Alert,AsyncStorage} from "react-native";
 import { Button } from "react-native-elements";
 import Spinner from "react-native-loading-spinner-overlay";
 import { StackNavigator } from "react-navigation";
+import SplashScreen from 'react-native-smart-splash-screen';
 
 export default class Sign_up extends Component {
 
@@ -26,6 +27,8 @@ export default class Sign_up extends Component {
         this.login_button = this.login_button.bind(this);
         this.sign_up_button = this.sign_up_button.bind(this);
         this.check_age = this.check_age.bind(this);
+        this._storeData_login = this._storeData_login();
+        this._storeData_sign_up = this._storeData_sign_up.bind(this);
 
     }
 
@@ -37,12 +40,46 @@ export default class Sign_up extends Component {
         password_sign_up="";
         confirm_password="";
         age="";
+
+        //SplashScreen.close(SplashScreen.animationType.scale, 850, 500)
+
     }
+    _storeData_sign_up = async () => {
+        try {
+            await AsyncStorage.setItem('username', this.username_sign_up);
+        } catch (error) {
+            Alert.alert(
+                'Ops!',
+                'Something went wrong. Please try again',
+                [
+
+                    {text: 'OK', onPress: () => {}},
+                ],
+                { cancelable: true }
+            )
+        }
+    };
+    _storeData_login = async () => {
+        try {
+
+            await AsyncStorage.setItem('username', this.username_login);
+        } catch (error) {
+            Alert.alert(
+                'Ops!',
+                'Something went wrong. Please try again',
+                [
+
+                    {text: 'OK', onPress: () => {}},
+                ],
+                { cancelable: true }
+            )
+        }
+    };
 
     login_button()
     {
         this.setState({spinner_visible:true});
-        fetch('http://5445b8f5.ngrok.io/login/', {
+        fetch('http://taohidulislam.pythonanywhere.com/login/', {
             method: 'POST',
             headers: {
                 Accept: 'application/json',
@@ -76,6 +113,20 @@ export default class Sign_up extends Component {
                 }
                 else if(response_text=="successful")
                 {
+
+                    try {
+                        AsyncStorage.setItem('username', this.username_login);
+                    } catch (error) {
+                        Alert.alert(
+                            'Ops!',
+                            'Something went wrong. Please try again',
+                            [
+
+                                {text: 'OK', onPress: () => {}},
+                            ],
+                            { cancelable: true }
+                        )
+                    }
                     Alert.alert(
                         'Successful!',
                         'Successfully Logged in',
@@ -84,7 +135,8 @@ export default class Sign_up extends Component {
                             {text: 'OK', onPress: () => {}},
                         ],
                         { cancelable: true }
-                    )
+                    );
+                    this.props.navigation.navigate("All_messages");
                 }
             });
     }
@@ -135,7 +187,7 @@ export default class Sign_up extends Component {
         {
             if(this.username_sign_up.length>0) {
                 this.setState({spinner_visible:true});
-                fetch('http://5445b8f5.ngrok.io/sign_up/', {
+                fetch('http://taohidulislam.pythonanywhere.com/sign_up/', {
                     method: 'POST',
                     headers: {
                         Accept: 'application/json',
@@ -144,7 +196,7 @@ export default class Sign_up extends Component {
                     body: JSON.stringify({
                         username: this.username_sign_up,
                         age: this.age,
-                        password_login: this.username_sign_up,
+                        password: this.password_sign_up,
                     }),
                 }).then((response) =>
                     response.json())
@@ -177,6 +229,7 @@ export default class Sign_up extends Component {
                         }
                         else if(response_text=="successful")
                         {
+                            this._storeData_sign_up();
                             Alert.alert(
                                 'Successful!',
                                 'Successfully Signed in',
@@ -185,7 +238,8 @@ export default class Sign_up extends Component {
                                     {text: 'OK', onPress: () => {}},
                                 ],
                                 { cancelable: true }
-                            )
+                            );
+                            this.props.navigation.navigate("All_messages");
                         }
                     });
             }
