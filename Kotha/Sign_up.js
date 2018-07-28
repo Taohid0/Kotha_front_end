@@ -263,7 +263,7 @@ export default class Sign_up extends Component {
             <View style={{backgroundColor: '#F5FCFF'}}>
             <ScrollView style={{backgroundColor: '#F5FCFF'}}>
                 <Spinner visible={this.state.spinner_visible} textContent={"Loading..."} textStyle={{ color: '#FFF' }} cancelable={true} />
-
+                <Text style={{paddingTop:10,paddingBottom:10,textAlign:"center",fontSize:40,color:"rgb(8, 71, 98)"}}>Kotha</Text>
                 <View style={{ flexDirection: "row" }}>
 
                     <View style={{ flex: 1, paddingTop: 15, paddingLeft: 10 }}>

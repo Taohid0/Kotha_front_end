@@ -164,6 +164,8 @@ export default class Send_message extends Component{
 
                 <ScrollView>
                     <Spinner visible={this.state.spinner_visible} textContent={"Loading..."} textStyle={{ color: '#FFF' }} cancelable={true} />
+
+                    <Text style={{textAlign:"center",fontWeight:"bold",paddingTop:10,paddingBottom:20,fontSize:30,color:"rgb(8, 71, 98)"}}>Send Message</Text>
                     <View style={{ flexDirection: "row" ,paddingTop:20,paddingBottom:20}}>
 
                         <View style={{ flex: 1, paddingTop: 15, paddingLeft: 10 }}>

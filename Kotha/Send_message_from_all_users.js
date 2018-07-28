@@ -1,21 +1,21 @@
 import React,{Component} from "react";
-import {View, Text, TextInput, StyleSheet, Picker, ScrollView, FlatList, Alert, AsyncStorage} from "react-native";
+import {View,Text,TextInput,StyleSheet,Picker,ScrollView,FlatList,Alert,AsyncStorage} from "react-native";
 import {Button} from "react-native-elements";
 import Spinner from "react-native-loading-spinner-overlay";
 
-export default class Reply extends Component{
+export default class Send_message_from_all_users extends Component{
 
     constructor(props)
     {
         super(props);
 
         this.state={
-            receiver:"",
+            receiver:this.props.navigation.state.params.username,
             message:"",
             spinner_visible:false,
             sender:"",
         };
-        receiver="";
+        receiver=this.props.navigation.state.params.username;
         message="";
         this.send_button = this.send_button.bind(this);
         this._retrieveData = this._retrieveData.bind(this);
@@ -26,7 +26,7 @@ export default class Reply extends Component{
         try {
             const value = await AsyncStorage.getItem('username');
             if (value !== null) {
-                this.sender =value;
+                this.setState({sender:value});
             }
             else{
                 this.props.navigation.navigate("Sign_up");
@@ -39,18 +39,17 @@ export default class Reply extends Component{
 
     componentDidMount()
     {
-        receiver="";
+        this.receiver=this.props.navigation.state.params.username;
         message="";
         this._retrieveData();
     }
     send_button()
     {
-
         try {
-            if (this.message.length == 0 ) {
+            if (this.message.length == 0 || this.receiver.length == 0) {
                 Alert.alert(
                     'Ops!',
-                    "Please fill up all the fields correctly. Only English letters are supported.",
+                    "Please fill up all the fields correctly",
                     [
 
                         {
@@ -62,17 +61,16 @@ export default class Reply extends Component{
                 )
             }
             else {
-
                 this.setState({spinner_visible:true});
-                fetch('http://taohidulislam.pythonanywhere.com/reply/', {
+                fetch('http://taohidulislam.pythonanywhere.com/send_message/', {
                     method: 'POST',
                     headers: {
                         Accept: 'application/json',
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        sender:this.sender,
-                        receiver_id :this.props.navigation.state.params.user_id,
+                        sender: this.state.sender,
+                        receiver: this.receiver,
                         message: this.message,
                     }),
                 }).then((response) =>
@@ -80,10 +78,11 @@ export default class Reply extends Component{
                     .then((responseJson) => {
                         this.setState({spinner_visible:false});
                         response_text = responseJson.response_text;
+
                         if (response_text == "error") {
                             Alert.alert(
                                 'Successful!',
-                                "Please fill up all the fields correctly",
+                                "Please fill up all the fields correctly. Only English letters are supported.",
                                 [
 
                                     {
@@ -136,8 +135,9 @@ export default class Reply extends Component{
                                 ],
                                 {cancelable: true}
                             );
-
-                            this.props.navigation.navigate("All_messages");
+                            this.setState({message:"",receiver:""});
+                            this.message="";
+                            this.receiver="";
                         }
                     });
             }
@@ -145,7 +145,7 @@ export default class Reply extends Component{
         catch (e) {
             Alert.alert(
                 'Successful!',
-                "Please fill up all the fields correctly. Only English letters are supported.",
+                "Please fill up all the fields correctly",
                 [
 
                     {
@@ -164,21 +164,26 @@ export default class Reply extends Component{
 
                 <ScrollView>
                     <Spinner visible={this.state.spinner_visible} textContent={"Loading..."} textStyle={{ color: '#FFF' }} cancelable={true} />
-                    <Text style={{textAlign:"center",fontWeight:"bold",paddingTop:10,paddingBottom:20,fontSize:30,color:"rgb(8, 71, 98)"}}>Reply</Text>
 
+                    <Text style={{textAlign:"center",fontWeight:"bold",paddingTop:10,paddingBottom:20,fontSize:30,color:"rgb(8, 71, 98)"}}>Send Message</Text>
                     <View style={{ flexDirection: "row" ,paddingTop:20,paddingBottom:20}}>
 
-                        <View style={{ flex: 1, paddingTop: 15,paddingBottom:20, paddingLeft: 10 }}>
-                            <Text>{this.props.navigation.state.params.message}</Text>
+                        <View style={{ flex: 1, paddingTop: 15, paddingLeft: 10 }}>
+                            <Text>Receiver : </Text>
                         </View>
 
+                        <View style={{ flex: 3 }}>
+                            <TextInput placeholder="Enter Username" value={this.state.receiver}
+                                       onChangeText={(receiver) => { this.setState({ receiver:receiver }); this.receiver=receiver; }}
+                            />
+                        </View>
 
                     </View>
-                    <TextInput placeholder="Enter Your Reply Here" value={this.state.message} key={"key"} onChangeText={(message) => {
+                    <TextInput placeholder="Enter Your Message Here" value={this.state.message} key={"key"} onChangeText={(message) => {
                         this.message = message;
                         this.setState({ message: message })
                     }} multiline={true} />
-
+                    <Text style={{paddingBottom:20}}></Text>
                     <View style={{ alignItems: "center", justifyContent: "center" ,paddingBottom: 20 }}>
                         <Button titleStyle={{ fontWeight: "1000", }} buttonStyle={{
                             paddingTop: this.padding,

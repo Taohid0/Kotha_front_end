@@ -71,7 +71,20 @@ export default class All_messages extends Component {
 
                 <ScrollView>
                     <Spinner visible={this.state.spinner_visible} textContent={"Loading..."} textStyle={{ color: '#FFF' }} cancelable={true} />
-                    <Text style={{textAlign:"center",fontWeight:"bold",paddingTop:10,paddingBottom:20,fontSize:30,color:"rgb(8, 71, 98)"}}>Inbox</Text>
+
+                    <View style={{ flexDirection: "row"}}>
+
+                        <View style={{ flex: 1, paddingTop: 15, paddingLeft: 10}}>
+                            <Text onPress={()=>this.props.navigation.openDrawer()} style={{ fontWeight:"bold",fontSize:20,color:"rgb(8, 71, 98)",textShadowOffset:{width: -2, height: 2},}}>Menu </Text>
+                        </View>
+
+                        <View style={{ flex: 3 }}>
+                            <Text style={{fontWeight:"bold",paddingTop:10,paddingLeft:45,paddingBottom:5,fontSize:30,color:"rgb(8, 71, 98)"}}>Inbox</Text>
+                        </View>
+                    </View>
+                    <Text style={{textAlign:"center",paddingBottom:20,fontSize:20,color:"rgb(8, 71, 98)"}}>({this.state.sender})</Text>
+                    {/*<Text style={{textAlign:"center",fontWeight:"bold",paddingTop:10,paddingBottom:5,fontSize:30,color:"rgb(8, 71, 98)"}}>>menuInbox</Text>*/}
+                    {/*<Text style={{textAlign:"center",paddingBottom:20,fontSize:20,color:"rgb(8, 71, 98)"}}>({this.state.sender})</Text>*/}
                     <FlatList
                         data={this.state.all_messages}
                         renderItem={({item,index}) => <Text onPress = {()=>this.props.navigation.navigate("Message_details",{message:item[0],user_id:item[1]} )} style={{

@@ -1,8 +1,9 @@
 import React,{Component} from "react";
-import {View,Text,TextInput,StyleSheet,Picker,ScrollView,FlatList,Alert,AsyncStorage} from "react-native";
+import {View, Text, TextInput, StyleSheet, Picker, ScrollView, FlatList, Alert, AsyncStorage} from "react-native";
 import {Button} from "react-native-elements";
 import Spinner from "react-native-loading-spinner-overlay";
-export default class Outbox extends Component {
+
+export default class All_users extends Component {
 
     constructor(props) {
         super(props);
@@ -10,21 +11,22 @@ export default class Outbox extends Component {
         this.state = {
             all_messages: [],
             sender:"",
+            empty_text:"",
         };
-        sender="";
         this.get_all_messages = this.get_all_messages.bind(this);
-        this._retrieveData = this._retrieveData.bind(this);
+        this._retrieveData =this._retrieveData.bind(this);
 
     }
     componentDidMount()
     {
+
         this._retrieveData();
     }
     _retrieveData = async () => {
+
         try {
             const value = await AsyncStorage.getItem('username');
             if (value !== null) {
-                this.sender =value;
                 this.setState({sender:value});
                 this.get_all_messages();
             }
@@ -36,25 +38,27 @@ export default class Outbox extends Component {
             // Error retrieving data
         }
     }
-
     get_all_messages() {
         this.setState({spinner_visible:true});
 
-        fetch("http://taohidulislam.pythonanywhere.com/sent_messages/",{
+        fetch("http://taohidulislam.pythonanywhere.com/all_users/",{
             method:"POST",
             headers:{
                 Accept:"application/json",
                 "Content-Type":"application/json",
             },
             body:JSON.stringify({
-                username :this.sender,
+                username :this.state.sender,
 
             }),
         }).then((response) =>
             response.json())
             .then((responseJson) => {
-                all_texts = responseJson.all_texts;
+                all_texts = responseJson.all_users;
                 this.setState({all_messages: all_texts,spinner_visible:false});
+                if (all_texts.length==0){
+                    this.setState({empty_text: "No User Found"})
+                }
 
             });
     }
@@ -76,19 +80,20 @@ export default class Outbox extends Component {
                         </View>
 
                         <View style={{ flex: 3 }}>
-                            <Text style={{fontWeight:"bold",paddingTop:10,paddingLeft:35,paddingBottom:5,fontSize:30,color:"rgb(8, 71, 98)"}}>Outbox</Text>
+                            <Text style={{fontWeight:"bold",paddingTop:10,paddingLeft:35,paddingBottom:5,fontSize:30,color:"rgb(8, 71, 98)"}}>All users</Text>
                         </View>
                     </View>
-                    <Text style={{textAlign:"center",paddingBottom:20,fontSize:20,color:"rgb(8, 71, 98)"}}>({this.state.sender})</Text>
 
-                    {/*<Text style={{textAlign:"center",fontWeight:"bold",paddingTop:10,paddingBottom:5,fontSize:30,color:"rgb(8, 71, 98)"}}>Outbox</Text>*/}
 
+                    {/*<Text style={{textAlign:"center",fontWeight:"bold",paddingTop:10,paddingBottom:20,fontSize:30,color:"rgb(8, 71, 98)"}}>All users</Text>*/}
                     <FlatList
                         data={this.state.all_messages}
-                        renderItem={({item,index}) => <Text  style={{
+                        renderItem={({item,index}) => <Text onPress = {()=>this.props.navigation.navigate("Send_message_from_all_users",
+                            {username:item} )} style={{
                             paddingTop:10,paddingBottom:10,paddingLeft:10,
-                            borderBottomColor:"white",borderBottomWidth:3,backgroundColor:"#F2F4F4"}} >{item[0]}</Text>}
+                            borderBottomColor:"white",borderBottomWidth:3,backgroundColor:"#F2F4F4"}} >{item}</Text>}
                     />
+                    <Text style={{fontSize:20,color:"Red",textAlign:"center"}}>{this.state.empty_text}</Text>
                 </ScrollView>
 
             </View>

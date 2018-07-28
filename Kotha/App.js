@@ -12,6 +12,8 @@ import Reply from "./Reply";
 import Outbox from "./Outbox";
 import SplashScreen from "react-native-smart-splash-screen";
 import Logout from "./Logout";
+import All_users from "./All_users";
+import Send_message_from_all_users from "./Send_message_from_all_users";
 
 console.disableYellowBox = true;
 
@@ -48,7 +50,12 @@ const Drawer_navigation = DrawerNavigator({
             drawerLabel:()=>"Outbox",
         }
     },
-
+    All_users:{
+        screen:All_users,
+        navigationOptions:{
+            drawerLabel:()=>"All Users"
+        }
+    },
     Message_details:{
         screen:(props) =><Message_details  {...props} propName={'message,user_id'} />,
         navigationOptions:{
@@ -58,6 +65,12 @@ const Drawer_navigation = DrawerNavigator({
         screen:Send_message,
         navigationOptions:{
             drawerLabel:()=>"Send Message",
+        }
+    },
+    Send_message_from_all_users:{
+        screen:(props)=><Send_message_from_all_users {...props} propName={"username"}/>,
+        navigationOptions:{
+            drawerLabel:()=>null,
         }
     },
     Reply:{
