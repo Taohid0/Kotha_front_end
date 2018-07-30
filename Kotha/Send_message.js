@@ -14,14 +14,50 @@ export default class Send_message extends Component{
             message:"",
             spinner_visible:false,
             sender:"",
+            usernames:[],
+            selected_username:"",
         };
         receiver="";
         message="";
         this.send_button = this.send_button.bind(this);
         this._retrieveData = this._retrieveData.bind(this);
+        this.get_all_users = this.get_all_users.bind(this);
 
     }
 
+    componentWillMount()
+    {
+        this.get_all_users();
+    }
+    get_all_users() {
+        this.setState({spinner_visible:true});
+
+        fetch("http://taohidulislam.pythonanywhere.com/all_users/",{
+            method:"POST",
+            headers:{
+                Accept:"application/json",
+                "Content-Type":"application/json",
+            },
+            body:JSON.stringify({
+                username :this.state.sender,
+
+            }),
+        }).then((response) =>
+            response.json())
+            .then((responseJson) => {
+                all_texts = responseJson.all_users;
+                all_texts.splice(0, 0, "Select Receiver");
+                if(all_texts.length>0)
+                {
+                    this.setState({usernames: all_texts,spinner_visible:false});
+
+                }
+                if (all_texts.length==0){
+                    this.setState({empty_text: "No User Found"})
+                }
+
+            });
+    }
     _retrieveData = async () => {
         try {
             const value = await AsyncStorage.getItem('username');
@@ -46,7 +82,7 @@ export default class Send_message extends Component{
     send_button()
     {
         try {
-            if (this.message.length == 0 || this.receiver.length == 0) {
+            if (this.message.length == 0 || this.state.selected_username.length == 0 ||this.state.selected_username=="Select Receiver") {
                 Alert.alert(
                     'Ops!',
                     "Please fill up all the fields correctly",
@@ -70,7 +106,7 @@ export default class Send_message extends Component{
                     },
                     body: JSON.stringify({
                         sender: this.state.sender,
-                        receiver: this.receiver,
+                        receiver: this.state.selected_username,
                         message: this.message,
                     }),
                 }).then((response) =>
@@ -135,7 +171,7 @@ export default class Send_message extends Component{
                                 ],
                                 {cancelable: true}
                             );
-                            this.setState({message:"",receiver:""});
+                            this.setState({message:"",receiver:"",selected_username:"Select Receiver"});
                             this.message="";
                             this.receiver="";
                         }
@@ -164,7 +200,6 @@ export default class Send_message extends Component{
 
                 <ScrollView>
                     <Spinner visible={this.state.spinner_visible} textContent={"Loading..."} textStyle={{ color: '#FFF' }} cancelable={true} />
-
                     <Text style={{textAlign:"center",fontWeight:"bold",paddingTop:10,paddingBottom:20,fontSize:30,color:"rgb(8, 71, 98)"}}>Send Message</Text>
                     <View style={{ flexDirection: "row" ,paddingTop:20,paddingBottom:20}}>
 
@@ -173,9 +208,19 @@ export default class Send_message extends Component{
                         </View>
 
                         <View style={{ flex: 3 }}>
-                            <TextInput placeholder="Enter Username" value={this.state.receiver}
-                                       onChangeText={(receiver) => { this.setState({ receiver:receiver }); this.receiver=receiver; }}
-                            />
+
+                            <Picker
+                                selectedValue={this.state.selected_username}
+                                style={{ height: 50,}}
+                                onValueChange={(itemValue, itemIndex) => this.setState({selected_username: itemValue})}>
+                                {this.state.usernames.map((item, index) => {
+                                    return (< Picker.Item label={item} value={item} key={index} />);
+                                })}
+                            </Picker>
+
+                            {/*<TextInput placeholder="Enter Username" value={this.state.receiver}*/}
+                                       {/*onChangeText={(receiver) => { this.setState({ receiver:receiver }); this.receiver=receiver; }}*/}
+                            {/*/>*/}
                         </View>
 
                     </View>
