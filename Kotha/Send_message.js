@@ -81,8 +81,8 @@ export default class Send_message extends Component{
 
                         if (response_text == "error") {
                             Alert.alert(
-                                'Successful!',
-                                "Please fill up all the fields correctly. Only English letters are supported.",
+                                'Ops!',
+                                "Please fill up all the fields correctly.Don't use emoticons for now!",
                                 [
 
                                     {

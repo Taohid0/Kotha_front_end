@@ -4,6 +4,7 @@ import { Button } from "react-native-elements";
 import Spinner from "react-native-loading-spinner-overlay";
 import { StackNavigator } from "react-navigation";
 import SplashScreen from 'react-native-smart-splash-screen';
+import { BackHandler } from 'react-native';
 
 export default class Sign_up extends Component {
 
@@ -29,6 +30,7 @@ export default class Sign_up extends Component {
         this.check_age = this.check_age.bind(this);
         this._storeData_login = this._storeData_login();
         this._storeData_sign_up = this._storeData_sign_up.bind(this);
+        this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
 
     }
 
@@ -43,6 +45,10 @@ export default class Sign_up extends Component {
 
         //SplashScreen.close(SplashScreen.animationType.scale, 850, 500)
 
+    }
+    componentWillMount()
+    {
+        BackHandler.addEventListener('hardwareBackPress', this.handleBackButtonClick);
     }
     _storeData_sign_up = async () => {
         try {
@@ -59,6 +65,9 @@ export default class Sign_up extends Component {
             )
         }
     };
+    componentWillUnmount() {
+        BackHandler.removeEventListener('hardwareBackPress', this.handleBackButtonClick);
+    }
     _storeData_login = async () => {
         try {
 
@@ -75,6 +84,10 @@ export default class Sign_up extends Component {
             )
         }
     };
+    handleBackButtonClick() {
+        BackHandler.exitApp();
+
+    }
 
     login_button()
     {
@@ -257,6 +270,7 @@ export default class Sign_up extends Component {
 
         }
     }
+
 
     render() {
         return (

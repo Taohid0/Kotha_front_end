@@ -82,8 +82,8 @@ export default class Reply extends Component{
                         response_text = responseJson.response_text;
                         if (response_text == "error") {
                             Alert.alert(
-                                'Successful!',
-                                "Please fill up all the fields correctly",
+                                'Ops!',
+                                "Please fill up all the fields correctly.Don't use emoticons for now!",
                                 [
 
                                     {
