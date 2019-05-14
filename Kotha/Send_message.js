@@ -1,8 +1,14 @@
 import React,{Component} from "react";
 import {View,Text,TextInput,StyleSheet,Picker,ScrollView,FlatList,Alert,AsyncStorage} from "react-native";
-import {Button} from "react-native-elements";
+import {Button,Avatar} from "react-native-elements";
 import Spinner from "react-native-loading-spinner-overlay";
+import {
+    AdMobBanner,
+    AdMobInterstitial,
+    PublisherBanner,
+    AdMobRewarded,
 
+} from 'react-native-admob';
 export default class Send_message extends Component{
 
     constructor(props)
@@ -207,6 +213,7 @@ export default class Send_message extends Component{
                             <Text>Receiver : </Text>
                         </View>
 
+
                         <View style={{ flex: 3 }}>
 
                             <Picker
@@ -224,6 +231,13 @@ export default class Send_message extends Component{
                         </View>
 
                     </View>
+                    {/*<Avatar*/}
+                        {/*large*/}
+                        {/*rounded*/}
+                        {/*source={{uri: "https://s3.amazonaws.com/uifaces/faces/twitter/kfriedson/128.jpg"}}*/}
+                        {/*onPress={() => console.log("Works!")}*/}
+                        {/*activeOpacity={0.7}*/}
+                    {/*/>*/}
                     <TextInput placeholder="Enter Your Message Here" value={this.state.message} key={"key"} onChangeText={(message) => {
                         this.message = message;
                         this.setState({ message: message })
@@ -236,6 +250,32 @@ export default class Send_message extends Component{
                             minHeight:40
                         }} onPress={()=>this.send_button()} title="SEND"  />
                     </View>
+
+                    <AdMobBanner
+                        adSize="fullBanner"
+                        adUnitID="ca-app-pub-2782059942193503/2183033142"
+                        testDevices={[AdMobBanner.simulatorId]}
+
+                    />
+                    <AdMobBanner
+                        adSize="fullBanner"
+                        adUnitID="ca-app-pub-2782059942193503/1782727838"
+                        testDevices={[AdMobBanner.simulatorId]}
+
+                    />
+                    <AdMobBanner
+                        adSize="fullBanner"
+                        adUnitID="ca-app-pub-2782059942193503/9887931642"
+                        testDevices={[AdMobBanner.simulatorId]}
+
+                    />
+                    <AdMobBanner
+                        adSize="fullBanner"
+                        adUnitID="ca-app-pub-2782059942193503/5526122607"
+                        testDevices={[AdMobBanner.simulatorId]}
+
+                    />
+
 
                 </ScrollView>
 

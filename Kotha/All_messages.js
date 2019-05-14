@@ -2,7 +2,12 @@ import React,{Component} from "react";
 import {View, Text, TextInput, StyleSheet, Picker, ScrollView, FlatList, Alert, AsyncStorage} from "react-native";
 import {Button} from "react-native-elements";
 import Spinner from "react-native-loading-spinner-overlay";
-
+import {
+    AdMobBanner,
+    AdMobInterstitial,
+    PublisherBanner,
+    AdMobRewarded,
+} from 'react-native-admob';
 export default class All_messages extends Component {
 
     constructor(props) {
@@ -85,6 +90,14 @@ export default class All_messages extends Component {
                     <Text style={{textAlign:"center",paddingBottom:20,fontSize:20,color:"rgb(8, 71, 98)"}}>({this.state.sender})</Text>
                     {/*<Text style={{textAlign:"center",fontWeight:"bold",paddingTop:10,paddingBottom:5,fontSize:30,color:"rgb(8, 71, 98)"}}>>menuInbox</Text>*/}
                     {/*<Text style={{textAlign:"center",paddingBottom:20,fontSize:20,color:"rgb(8, 71, 98)"}}>({this.state.sender})</Text>*/}
+
+                    <AdMobBanner
+                        adSize="fullBanner"
+                        adUnitID="ca-app-pub-2782059942193503/1976500659"
+                        testDevices={[AdMobBanner.simulatorId]}
+
+                    />
+
                     <FlatList
                         data={this.state.all_messages}
                         renderItem={({item,index}) => <Text onPress = {()=>this.props.navigation.navigate("Message_details",{message:item[0],user_id:item[1]} )} style={{

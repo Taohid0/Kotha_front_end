@@ -2,7 +2,12 @@ import React,{Component} from "react";
 import {View,Text,TextInput,StyleSheet,Picker,ScrollView,FlatList,Alert,AsyncStorage} from "react-native";
 import {Button} from "react-native-elements";
 import Spinner from "react-native-loading-spinner-overlay";
-
+import {
+    AdMobBanner,
+    AdMobInterstitial,
+    PublisherBanner,
+    AdMobRewarded,
+} from 'react-native-admob';
 export default class Send_message_from_all_users extends Component{
 
     constructor(props)
@@ -191,6 +196,13 @@ export default class Send_message_from_all_users extends Component{
                             minHeight:40
                         }} onPress={()=>this.send_button()} title="SEND"  />
                     </View>
+
+                    <AdMobBanner
+                        adSize="fullBanner"
+                        adUnitID="ca-app-pub-2782059942193503/1354518274"
+                        testDevices={[AdMobBanner.simulatorId]}
+
+                    />
 
                 </ScrollView>
 

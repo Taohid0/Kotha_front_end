@@ -5,6 +5,12 @@ import Spinner from "react-native-loading-spinner-overlay";
 import { StackNavigator } from "react-navigation";
 import SplashScreen from 'react-native-smart-splash-screen';
 import { BackHandler } from 'react-native';
+import {
+    AdMobBanner,
+    AdMobInterstitial,
+    PublisherBanner,
+    AdMobRewarded,
+} from 'react-native-admob';
 
 export default class Sign_up extends Component {
 
@@ -228,6 +234,18 @@ export default class Sign_up extends Component {
                                 { cancelable: true }
                             );
                         }
+                        if(response_text=="space")
+                        {
+                            Alert.alert(
+                                'Ops!',
+                                'Please remove extra spaces from your username',
+                                [
+
+                                    {text: 'OK', onPress: () => {}},
+                                ],
+                                { cancelable: true }
+                            );
+                        }
                         else if(response_text=="duplicate")
                         {
                             Alert.alert(
@@ -321,6 +339,15 @@ export default class Sign_up extends Component {
                     }} title="Login"  onPress={()=>this.login_button()} />
                 </View>
 
+                <Text style={{paddingTop:10}}></Text>
+
+                <AdMobBanner
+                    adSize="fullBanner"
+                    adUnitID="ca-app-pub-2782059942193503/3775316417"
+                    testDevices={[AdMobBanner.simulatorId]}
+
+                />
+
                 <Text style={{textAlign:"center",fontSize:30,paddingTop:20,paddingBottom:20,color:"rgb(179, 14, 9)"}}>OR</Text>
                 <View style={{ flexDirection: "row" }}>
 
@@ -394,6 +421,7 @@ export default class Sign_up extends Component {
                         borderRadius: 5, width: 200, height: 45, backgroundColor: "rgb(8, 71, 98)", paddingTop: 5
                     }} onPress={()=>this.sign_up_button()} title="SIGN UP"  />
                 </View>
+
             </ScrollView>
             </View>
         );

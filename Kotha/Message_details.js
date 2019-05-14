@@ -2,6 +2,13 @@ import React,{Component} from "react";
 import {View, Text, TextInput, StyleSheet, Picker, ScrollView, FlatList, Alert, AsyncStorage} from "react-native";
 import {Button} from "react-native-elements";
 import Spinner from "react-native-loading-spinner-overlay";
+
+import {
+    AdMobBanner,
+    AdMobInterstitial,
+    PublisherBanner,
+    AdMobRewarded,
+} from 'react-native-admob';
 export default class Message_details extends Component{
 
     constructor(props)
@@ -141,6 +148,31 @@ reply_button()
                         </View>
 
                     </View>
+
+                    <AdMobBanner
+                        adSize="fullBanner"
+                        adUnitID="ca-app-pub-2782059942193503/9302125204"
+                        testDevices={[AdMobBanner.simulatorId]}
+
+                    />
+                    <AdMobBanner
+                        adSize="fullBanner"
+                        adUnitID="ca-app-pub-2782059942193503/3666655148"
+                        testDevices={[AdMobBanner.simulatorId]}
+
+                    />
+                    <AdMobBanner
+                        adSize="fullBanner"
+                        adUnitID="ca-app-pub-2782059942193503/5718103417"
+                        testDevices={[AdMobBanner.simulatorId]}
+
+                    />
+                    <AdMobBanner
+                        adSize="fullBanner"
+                        adUnitID="ca-app-pub-2782059942193503/3909788601"
+                        testDevices={[AdMobBanner.simulatorId]}
+
+                    />
 
                 </ScrollView>
 

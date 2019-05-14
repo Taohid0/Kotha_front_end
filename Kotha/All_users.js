@@ -2,7 +2,12 @@ import React,{Component} from "react";
 import {View, Text, TextInput, StyleSheet, Picker, ScrollView, FlatList, Alert, AsyncStorage} from "react-native";
 import {Button} from "react-native-elements";
 import Spinner from "react-native-loading-spinner-overlay";
-
+import {
+    AdMobBanner,
+    AdMobInterstitial,
+    PublisherBanner,
+    AdMobRewarded,
+} from 'react-native-admob';
 export default class All_users extends Component {
 
     constructor(props) {
@@ -16,6 +21,12 @@ export default class All_users extends Component {
         this.get_all_messages = this.get_all_messages.bind(this);
         this._retrieveData =this._retrieveData.bind(this);
 
+    }
+    componentWillMount()
+    {
+        AdMobInterstitial.setAdUnitID('ca-app-pub-2782059942193503/6319495375');
+        AdMobInterstitial.setTestDevices([AdMobInterstitial.simulatorId]);
+        AdMobInterstitial.requestAd().then(() => AdMobInterstitial.showAd());
     }
     componentDidMount()
     {
@@ -84,7 +95,12 @@ export default class All_users extends Component {
                         </View>
                     </View>
 
+                    <AdMobBanner
+                        adSize="fullBanner"
+                        adUnitID="ca-app-pub-2782059942193503/7866712460"
+                        testDevices={[AdMobBanner.simulatorId]}
 
+                    />
                     {/*<Text style={{textAlign:"center",fontWeight:"bold",paddingTop:10,paddingBottom:20,fontSize:30,color:"rgb(8, 71, 98)"}}>All users</Text>*/}
                     <FlatList
                         data={this.state.all_messages}
